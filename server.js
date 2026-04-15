@@ -33,7 +33,7 @@ async function initDB() {
     await pool.query(`
         CREATE TABLE IF NOT EXISTS messages (
             id SERIAL PRIMARY KEY,
-            user TEXT,
+            username TEXT,
             text TEXT,
             time TEXT
         );
@@ -82,7 +82,7 @@ async function emitUsers(socket, excludeUser) {
         socket.emit("all users", users);
     } catch (err) {
         console.error(err);
-        socket.emit("all users", []);
+        socket.emit("all s", []);
     }
 }
 
@@ -210,13 +210,13 @@ io.on("connection", (socket) => {
             const time = new Date().toLocaleTimeString();
 
             const result = await db.query(
-                "INSERT INTO messages (user, text, time) VALUES ($1, $2, $3) RETURNING id",
-                [msg.user, msg.text, time]
+                "INSERT INTO messages (username, text, time) VALUES ($1, $2, $3) RETURNING id",
+                [msg.username, msg.text, time]
             );
 
             io.emit("chat message", {
                 id: result.rows[0].id,
-                user: msg.user,
+                user: msg.username,
                 text: msg.text,
                 time
             });
