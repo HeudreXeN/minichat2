@@ -4,6 +4,11 @@ const { Server } = require("socket.io");
 const { Pool } = require("pg");
 const bcrypt = require("bcrypt");
 
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+});
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -15,12 +20,6 @@ const ADMIN = "Admin";
 // =========================
 // POSTGRES CONNECTION
 // =========================
-const db = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
-});
 
 async function initDB() {
     await pool.query(`
