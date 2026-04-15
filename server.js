@@ -155,9 +155,9 @@ io.on("connection", (socket) => {
                 return socket.emit("login error", "User not found");
             }
 
-            const user = result.rows[0];
+            const username = result.rows[0];
 
-            const ok = await bcrypt.compare(password, user.password);
+            const ok = await bcrypt.compare(password, username.password);
 
             if (!ok) {
                 return socket.emit("login error", "Wrong password");
@@ -216,7 +216,7 @@ io.on("connection", (socket) => {
 
             io.emit("chat message", {
                 id: result.rows[0].id,
-                user: msg.username,
+                username: msg.username,
                 text: msg.text,
                 time
             });
