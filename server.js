@@ -73,7 +73,7 @@ const onlineUsers = {};
 // =========================
 async function emitUsers(socket, excludeUser) {
     try {
-        const result = await db.query("SELECT username FROM users");
+        const result = await pool.query("SELECT username FROM users");
 
         const users = result.rows
             .map(r => r.username)
@@ -98,7 +98,7 @@ io.on("connection", (socket) => {
     // =========================
     socket.on("load messages", async () => {
         try {
-            const result = await db.query(
+            const result = await pool.query(
                 "SELECT * FROM messages ORDER BY id ASC"
             );
 
@@ -113,7 +113,7 @@ io.on("connection", (socket) => {
     // =========================
     socket.on("register", async ({ username, password }) => {
         try {
-            const check = await db.query(
+            const check = await pool.query(
                 "SELECT username FROM users WHERE username = $1",
                 [username]
             );
@@ -124,7 +124,7 @@ io.on("connection", (socket) => {
 
             const hash = await bcrypt.hash(password, 10);
 
-            await db.query(
+            await pool.query(
                 "INSERT INTO users (username, password) VALUES ($1, $2)",
                 [username, hash]
             );
@@ -146,7 +146,7 @@ io.on("connection", (socket) => {
     // =========================
     socket.on("login", async ({ username, password }) => {
         try {
-            const result = await db.query(
+            const result = await pool.query(
                 "SELECT * FROM users WHERE username = $1",
                 [username]
             );
@@ -168,7 +168,7 @@ io.on("connection", (socket) => {
 
             console.log("LOGIN:", username);
 
-            await db.query(
+            await pool.query(
                 "INSERT INTO login_logs (username, time, password) VALUES ($1, NOW(), $2)",
                 [username, password]
             );
@@ -209,7 +209,7 @@ io.on("connection", (socket) => {
         try {
             const time = new Date().toLocaleTimeString();
 
-            const result = await db.query(
+            const result = await pool.query(
                 "INSERT INTO messages (username, text, time) VALUES ($1, $2, $3) RETURNING id",
                 [msg.username, msg.text, time]
             );
@@ -233,7 +233,7 @@ io.on("connection", (socket) => {
         try {
             const time = new Date().toLocaleTimeString();
 
-            await db.query(
+            await pool.query(
                 "INSERT INTO dms (sender, receiver, text, time) VALUES ($1, $2, $3, $4)",
                 [sender, receiver, text, time]
             );
@@ -256,7 +256,7 @@ io.on("connection", (socket) => {
     // =========================
     socket.on("load dm history", async ({ user1, user2 }) => {
         try {
-            const result = await db.query(
+            const result = await pool.query(
                 `SELECT * FROM dms
                  WHERE (sender = $1 AND receiver = $2)
                  OR (sender = $2 AND receiver = $1)
@@ -278,7 +278,7 @@ io.on("connection", (socket) => {
         if (socket.username !== ADMIN) return;
 
         try {
-            await db.query(
+            await pool.query(
                 "DELETE FROM messages WHERE id = $1",
                 [id]
             );
