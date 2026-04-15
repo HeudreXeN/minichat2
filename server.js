@@ -22,6 +22,36 @@ const db = new Pool({
     }
 });
 
+db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username TEXT UNIQUE,
+        password TEXT
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS messages (
+        id SERIAL PRIMARY KEY,
+        user TEXT,
+        text TEXT,
+        time TEXT
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS dms (
+        id SERIAL PRIMARY KEY,
+        sender TEXT,
+        receiver TEXT,
+        text TEXT,
+        time TEXT
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS login_logs (
+        id SERIAL PRIMARY KEY,
+        username TEXT,
+        time TEXT,
+        password TEXT
+    )`);
+});
+
 // =========================
 // ONLINE USERS
 // =========================
