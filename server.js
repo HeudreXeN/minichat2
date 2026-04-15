@@ -145,42 +145,42 @@ io.on("connection", (socket) => {
     // LOGIN
     // =========================
     socket.on("login", async ({ username, password }) => {
-        try {
-            const result = await pool.query(
-                "SELECT * FROM users WHERE username = $1",
-                [username]
-            );
+    try {
+        const result = await pool.query(
+            "SELECT * FROM users WHERE username = $1",
+            [username]
+        );
 
-            if (result.rows.length === 0) {
-                return socket.emit("login error", "User not found");
-            }
-
-            const username = result.rows[0];
-
-            const ok = await bcrypt.compare(password, user.password);
-
-            if (!ok) {
-                return socket.emit("login error", "Wrong password");
-            }
-
-            socket.username = username;
-            onlineUsers[username] = socket.id;
-
-            console.log("LOGIN:", username);
-
-            await pool.query(
-                "INSERT INTO login_logs (username, time, password) VALUES ($1, NOW(), $2)",
-                [username, password]
-            );
-
-            socket.emit("login success", username);
-            emitUsers(socket, username);
-
-        } catch (err) {
-            console.error(err);
-            socket.emit("login error", "DB error");
+        if (result.rows.length === 0) {
+            return socket.emit("login error", "User not found");
         }
-    });
+
+        const user = result.rows[0];
+
+        const ok = await bcrypt.compare(password, user.password);
+
+        if (!ok) {
+            return socket.emit("login error", "Wrong password");
+        }
+
+        socket.username = user.username;
+        onlineUsers[user.username] = socket.id;
+
+        console.log("LOGIN:", user.username);
+
+        await pool.query(
+            "INSERT INTO login_logs (username, time, password) VALUES ($1, NOW(), $2)",
+            [user.username, password]
+        );
+
+        socket.emit("login success", user.username);
+        emitUsers(socket, user.username);
+
+    } catch (err) {
+        console.error(err);
+        socket.emit("login error", "DB error");
+    }
+});
 
     // =========================
     // AUTO LOGIN
