@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mini Chat</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="main.js" defer></script>
+</head>
+
+<body>
+
+<!-- 🔐 LOGIN -->
+<div id="login">
+    <h2>Přihlášení / Registrace</h2>
+
+    <input id="usernameInput" placeholder="Uživatelské jméno">
+    <br><br>
+
+    <input id="passwordInput" type="password" placeholder="Heslo">
+    <br><br>
+
+    <button onclick="register()">Registrovat</button>
+    <button onclick="login()">Přihlásit</button>
+</div>
+
+<!-- 💬 APP -->
+<div id="chat" style="display:none;">
+
+    <button id="adminBtn" style="display:none; background:red; color:white;">
+        Smazat globální chat
+    </button>
+
+    <p id="currentUser"></p>
+
+    <button onclick="openSidebar()">☰</button>
+    <button id="logoutBtn" onclick="logout()">Odhlásit se</button>
+    <button onclick="toggleDarkMode()">🌙</button>
+
+    <div class="container">
+
+        <!-- USERS -->
+        <div class="sidebar">
+            <h3>Uživatelé</h3>
+            <ul id="users"></ul>
+        </div>
+
+        <!-- GLOBAL CHAT -->
+        <div class="chat">
+
+            <ul id="messages"></ul>
+
+            <div class="inputRow">
+                <input id="input" placeholder="Napiš zprávu...">
+                <button onclick="sendGlobal()">Odeslat</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- 💌 DM OVERLAY -->
+<div id="dmChat" style="display:none;">
+
+    <!-- HEADER -->
+    <div class="dmHeaderRow">
+        <h3 id="dmHeader"></h3>
+        <button id="closeDmBtn">✖</button>
+    </div>
+
+    <!-- MESSAGES SCROLL AREA -->
+    <div id="dmMessagesWrapper">
+        <ul id="dmMessages"></ul>
+    </div>
+
+    <!-- INPUT -->
+    <div class="inputRow">
+        <input id="dmInput" placeholder="Napiš DM...">
+        <button onclick="sendDM()">Odeslat</button>
+    </div>
+
+</div>
+
+</body>
+</html>
