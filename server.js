@@ -157,7 +157,7 @@ io.on("connection", (socket) => {
 
             const username = result.rows[0];
 
-            const ok = await bcrypt.compare(password, username.password);
+            const ok = await bcrypt.compare(password, user.password);
 
             if (!ok) {
                 return socket.emit("login error", "Wrong password");
