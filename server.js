@@ -1,7 +1,14 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
-const sqlite3 = require("sqlite3").verbose();
+//const sqlite3 = require("sqlite3").verbose();
+///////////////////////////////////////////////////////////
+const { Pool } = require("pg");
+
+const db = new Pool({
+    connectionString: process.env.DATABASE_URL
+});
+///////////////////////////////////////////////////////////
 const bcrypt = require("bcrypt");
 
 const app = express();
@@ -10,7 +17,7 @@ const io = new Server(server);
 
 app.use(express.static("public"));
 
-const db = new sqlite3.Database("chat.db");
+//const db = new sqlite3.Database("chat.db");
 
 // =========================
 // 👑 ADMIN
