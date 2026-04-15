@@ -17,7 +17,7 @@ window.onload = () => {
         document.getElementById("login").style.display = "none";
         document.getElementById("chat").style.display = "block";
 
-        document.getElementById("currentUser").textContent =
+        document.getElementById("currentusername").textContent =
             "Přihlášen: " + username;
 
         socket.emit("load messages");
@@ -98,7 +98,7 @@ function sendGlobal() {
     if (!text) return;
 
     socket.emit("chat message", {
-        user: username,
+        username: username,
         text
     });
 
@@ -107,7 +107,7 @@ function sendGlobal() {
 
 function addGlobalMessage(msg) {
     const li = document.createElement("li");
-    li.textContent = `[${msg.time}] ${msg.user}: ${msg.text}`;
+    li.textContent = `[${msg.time}] ${msg.username}: ${msg.text}`;
 
     if (username === "Admin") {
         const btn = document.createElement("button");
@@ -141,16 +141,16 @@ socket.on("all users", (users) => {
 // =========================
 // 💌 DM OPEN
 // =========================
-function openDM(user) {
+function openDM(username) {
     if (username === "Admin") {
 
         if (!selectedUser1) {
-            selectedUser1 = user;
+            selectedUser1 = username;
             alert("Vyber druhého uživatele");
             return;
         }
 
-        selectedUser2 = user;
+        selectedUser2 = username;
 
         document.getElementById("dmChat").style.display = "flex";
         document.getElementById("dmHeader").textContent =
@@ -165,10 +165,10 @@ function openDM(user) {
         selectedUser2 = "";
 
     } else {
-        currentDM = user;
+        currentDM = username;
 
         document.getElementById("dmChat").style.display = "flex";
-        document.getElementById("dmHeader").textContent = "DM s: " + user;
+        document.getElementById("dmHeader").textContent = "DM s: " + username;
 
         socket.emit("load dm history", {
             user1: username,
