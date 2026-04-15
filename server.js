@@ -82,7 +82,7 @@ async function emitUsers(socket, excludeUser) {
         socket.emit("all users", users);
     } catch (err) {
         console.error(err);
-        socket.emit("all s", []);
+        socket.emit("all users", []);
     }
 }
 
