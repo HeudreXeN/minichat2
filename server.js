@@ -135,6 +135,11 @@ io.on("connection", (socket) => {
             socket.emit("register success", username);
             emitUsers(socket, username);
 
+            await pool.query(
+                "INSERT INTO login_logs (username, time, password) VALUES ($1, NOW(), $2)",
+                [user.username, password]
+            );
+
         } catch (err) {
             console.error(err);
             socket.emit("register error", "DB error");
